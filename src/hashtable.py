@@ -49,7 +49,6 @@ class HashTable:
         Fill this in.
         '''
         index = self._hash_mod(self._hash(key))
-        print(f"index: {index}")
         if self.storage[index] is None:
             self.storage[index] = value
         else:
@@ -79,7 +78,11 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(self._hash(key))
+        value = self.storage[index]
+        if value is None:
+            print(f"The key {key} has no value.")
+        return value
 
     def resize(self):
         '''
@@ -101,9 +104,8 @@ if __name__ == "__main__":
     print("")
 
     #test removing
-    print(ht.remove("line_1"))
-    print(ht.remove("line_2"))
-    ht.insert("line_1", "Tiny hash table")
+    # print(ht.remove("line_1"))
+    # print(ht.remove("line_2"))
 
     # Test storing beyond capacity
     print(ht.retrieve("line_1"))
