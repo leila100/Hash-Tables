@@ -50,7 +50,7 @@ class HashTable:
         '''
         index = self._hash_mod(self._hash(key))
         if self.storage[index] is None:
-            self.storage[index] = value
+            self.storage[index] = (key, value)
         else:
             print("There was an index collision")
 
@@ -66,9 +66,9 @@ class HashTable:
         value = self.storage[index]
         if value is None:
             print(f"The key {key} has no value.")
-        else:
-            self.storage[index] = None
-        return value
+            return None
+        self.storage[index] = None
+        return value[1]
 
     def retrieve(self, key):
         '''
@@ -82,7 +82,8 @@ class HashTable:
         value = self.storage[index]
         if value is None:
             print(f"The key {key} has no value.")
-        return value
+            return None
+        return value[1]
 
     def resize(self):
         '''
@@ -91,8 +92,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
+        self.capacity *= 2
+        new_storage = [None] * self.capacity
+        for pair in self.storage:
+            if pair is not None:
+                index = self._hash_mod(self._hash(pair[0]))
+                new_storage[index] = pair
+        self.storage = new_storage
 
 if __name__ == "__main__":
     ht = HashTable(2)
