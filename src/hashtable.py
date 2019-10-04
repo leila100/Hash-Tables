@@ -48,11 +48,27 @@ class HashTable:
 
         Fill this in.
         '''
-        index = self._hash_mod(self._hash(key))
+        index = self._hash_mod(key)
         if self.storage[index] is None:
-            self.storage[index] = (key, value)
+            print(f"inserting new node at index {index}")
+            self.storage[index] = LinkedPair(key, value)
         else:
             print("There was an index collision")
+            # go through linked list
+            # if key not there, add node
+            # if key there, update value
+            current_node = self.storage[index]
+            if current_node.key == key:
+                current_node.value = value
+                return
+            while current_node.next is not None:
+                current_node = current_node.next
+                if current_node.key == key:
+                    current_node.value = value
+                    return
+            print(f"adding new node to linked list at index {index}")
+            current_node.next = LinkedPair(key, value)
+            return
 
     def remove(self, key):
         '''
@@ -62,7 +78,7 @@ class HashTable:
 
         Fill this in.
         '''
-        index = self._hash_mod(self._hash(key))
+        index = self._hash_mod(key)
         value = self.storage[index]
         if value is None:
             print(f"The key {key} has no value.")
@@ -78,7 +94,7 @@ class HashTable:
 
         Fill this in.
         '''
-        index = self._hash_mod(self._hash(key))
+        index = self._hash_mod(key)
         value = self.storage[index]
         if value is None:
             print(f"The key {key} has no value.")
@@ -96,7 +112,7 @@ class HashTable:
         new_storage = [None] * self.capacity
         for pair in self.storage:
             if pair is not None:
-                index = self._hash_mod(self._hash(pair[0]))
+                index = self._hash_mod(pair[0])
                 new_storage[index] = pair
         self.storage = new_storage
 
@@ -114,20 +130,20 @@ if __name__ == "__main__":
     # print(ht.remove("line_2"))
 
     # Test storing beyond capacity
-    print(ht.retrieve("line_1"))
-    print(ht.retrieve("line_2"))
-    print(ht.retrieve("line_3"))
+    # print(ht.retrieve("line_1"))
+    # print(ht.retrieve("line_2"))
+    # print(ht.retrieve("line_3"))
 
-    # Test resizing
-    old_capacity = len(ht.storage)
-    ht.resize()
-    new_capacity = len(ht.storage)
+    # # Test resizing
+    # old_capacity = len(ht.storage)
+    # ht.resize()
+    # new_capacity = len(ht.storage)
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    # Test if data intact after resizing
-    print(ht.retrieve("line_1"))
-    print(ht.retrieve("line_2"))
-    print(ht.retrieve("line_3"))
+    # # Test if data intact after resizing
+    # print(ht.retrieve("line_1"))
+    # print(ht.retrieve("line_2"))
+    # print(ht.retrieve("line_3"))
 
-    print("")
+    # print("")
