@@ -95,11 +95,14 @@ class HashTable:
         Fill this in.
         '''
         index = self._hash_mod(key)
-        value = self.storage[index]
-        if value is None:
-            print(f"The key {key} has no value.")
-            return None
-        return value[1]
+        current_node = self.storage[index]
+        while current_node is not None:
+            if current_node.key == key:
+                return current_node.value
+            current_node = current_node.next
+
+        print(f"The key {key} has no value.")        
+        return None
 
     def resize(self):
         '''
@@ -130,9 +133,9 @@ if __name__ == "__main__":
     # print(ht.remove("line_2"))
 
     # Test storing beyond capacity
-    # print(ht.retrieve("line_1"))
-    # print(ht.retrieve("line_2"))
-    # print(ht.retrieve("line_3"))
+    print(ht.retrieve("line_1"))
+    print(ht.retrieve("line_2"))
+    print(ht.retrieve("line_3"))
 
     # # Test resizing
     # old_capacity = len(ht.storage)
