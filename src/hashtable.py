@@ -16,6 +16,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
+        self.num_entries = 0
 
     def _hash(self, key):
         '''
@@ -51,6 +52,7 @@ class HashTable:
         index = self._hash_mod(key)
         if self.storage[index] is None:
             self.storage[index] = LinkedPair(key, value)
+            self.num_entries += 1
         else:
             # go through linked list
             # if key not there, add node
@@ -65,6 +67,12 @@ class HashTable:
                     current_node.value = value
                     return
             current_node.next = LinkedPair(key, value)
+            self.num_entries += 1
+            # Check the load factor num_entries/capacity
+            # if > 0.7 resize
+            load_factor = self.num_entries / self.capacity
+            if load_factor > 0.7:
+                self.resize()
             return
 
     def remove(self, key):
@@ -81,16 +89,17 @@ class HashTable:
             return
         if current_node.key == key:
             self.storage[index] = current_node.next
+            self.num_entries -= 1
             return
         next_node = current_node.next
         while next_node is not None:
             if next_node.key == key:
                 current_node.next = next_node.next
                 next_node.next = None
+                self.num_entries -= 1
                 return
             current_node = next_node
             next_node = next_node.next
-        print(f"Key {key} doesn't exist")
 
     def retrieve(self, key):
         '''
@@ -106,8 +115,6 @@ class HashTable:
             if current_node.key == key:
                 return current_node.value
             current_node = current_node.next
-
-        print(f"The key {key} has no value.")        
         return None
 
     def resize(self):
@@ -118,14 +125,14 @@ class HashTable:
         Fill this in.
         '''
         self.capacity *= 2
-        new_storage = HashTable(self.capacity)
+        new_ht = HashTable(self.capacity)
         for bucket in self.storage:
             current_node = bucket
             while current_node is not None:
                 index = self._hash_mod(current_node.key)
-                new_storage.insert(current_node.key, current_node.value)
+                new_ht.insert(current_node.key, current_node.value)
                 current_node = current_node.next
-        self.storage = new_storage.storage
+        self.storage = new_ht.storage
 
 if __name__ == "__main__":
     ht = HashTable(2)
