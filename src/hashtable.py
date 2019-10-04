@@ -79,12 +79,21 @@ class HashTable:
         Fill this in.
         '''
         index = self._hash_mod(key)
-        value = self.storage[index]
-        if value is None:
-            print(f"The key {key} has no value.")
-            return None
-        self.storage[index] = None
-        return value[1]
+        current_node = self.storage[index]
+        if current_node is None:
+            return
+        if current_node.key == key:
+            self.storage[index] = current_node.next
+            return
+        next_node = current_node.next
+        while next_node is not None:
+            if next_node.key == key:
+                current_node.next = next_node.next
+                next_node.next = None
+                return
+            current_node = next_node
+            next_node = next_node.next
+        print(f"Key {key} doesn't exist")
 
     def retrieve(self, key):
         '''
@@ -129,8 +138,8 @@ if __name__ == "__main__":
     print("")
 
     #test removing
-    # print(ht.remove("line_1"))
-    # print(ht.remove("line_2"))
+    print(ht.remove("line_3"))
+    print(ht.remove("line_3"))
 
     # Test storing beyond capacity
     print(ht.retrieve("line_1"))
